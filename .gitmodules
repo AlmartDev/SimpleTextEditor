@@ -1,0 +1,9 @@
+[submodule "editor/3rdParty/glad"]
+	path = editor/3rdParty/glad
+	url = https://github.com/premake-libs/glad.git
+[submodule "editor/3rdParty/GLFW"]
+	path = editor/3rdParty/GLFW
+	url = https://github.com/TheCherno/glfw.git
+[submodule "editor/3rdParty/imgui"]
+	path = editor/3rdParty/imgui
+	url = https://github.com/gabrielmaneru/imgui-premake.git
