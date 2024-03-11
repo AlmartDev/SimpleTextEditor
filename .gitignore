@@ -10,6 +10,10 @@ app/bin/*
 core/bin/*
 build/bin/*
 
+editor/bin/*
+editor/obj/*
+editor/3rdParty/*
+
 # Prerequisites
 *.d
 

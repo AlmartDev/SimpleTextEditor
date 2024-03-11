@@ -1,5 +1,7 @@
 local project_name = "TextEditor"
 
+outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+
 workspace (project_name)
     configurations {
        "debug",
