@@ -1,9 +1,6 @@
 # Simple Text Editor
+A rudimentary text editor in its infancy stages, likely to remain perpetually unfinished. Utilizing premake5 for project generation.
 
-Very basic text editor that will probably never be finished. Using premake5 to generate projects
-
-# Requirements
-Add them to editor/3rdParty/
-- imgui
-- glad
-- glfw3
+# Usage
+`-p` to select working directory
+`-s` to select style

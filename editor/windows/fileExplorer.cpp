@@ -2,6 +2,8 @@
 #include <filesystem>
 #include <stdio.h>
 
+//#include "../image.h"
+
 namespace editor {
     FileExplorer::FileExplorer(editor::FileManager* _fileManager, editor::Editor* _textEditor) {
         fileManager = _fileManager;
@@ -21,6 +23,10 @@ namespace editor {
         //ImGui::Text("Current Path: %s", fileManager->getFullPath().c_str());
         std::vector<std::vector<std::string>> files = fileManager->listFiles(fileManager->getFullPath());
 
+        // icons
+        // create image from "icons/file.svg" with a size of 16x16
+
+
         static int selected = -1;        
 
         ImGui::BeginChild("left pane", ImVec2(250, 0), false);
@@ -29,23 +35,38 @@ namespace editor {
             char label[128];
             sprintf(label, files[0][i].c_str());
 
-            // TODO: Icons!
-            ImGui::Image((void*)0, ImVec2(16, 16)); // update this!
-            ImGui::SameLine(0, 10);
 
-            if (ImGui::Selectable(label, selected == i)) {
 
-                // if file is not a folder, open it
-                if (files[0][i].find("/") == std::string::npos) {
+            if (files[0][i].find("/") == std::string::npos) {
+                if (ImGui::Selectable(label, selected == i)) {
                     FileExplorer::openFile(files[1][i]);
                 }
-                else {
-                    // open folder and show fileList but for that folder
-                }
-
-                selected = i;
             }
+            else {
+                // open folder
+                // instead of opening the file, we're gonna make a dropdown with the files inside the folder
+                std::vector<std::vector<std::string>> folderFiles = fileManager->listFiles(files[1][i]);
 
+                if (ImGui::TreeNode(label)) {
+                    for (int j = 0; j < folderFiles[0].size(); j++) {
+                        char label[128];
+                        sprintf(label, folderFiles[0][j].c_str());
+
+                        ImGui::Image((void*)0, ImVec2(16, 16)); // update this!
+                        ImGui::SameLine(0, 10);
+
+                        if (ImGui::Selectable(label, selected == i)) {
+                            FileExplorer::openFile(folderFiles[1][j]);
+                        }
+                    }
+                    ImGui::TreePop();
+                }
+            }
+            
+
+                
+            selected = i;
+            
             /*
                What is happening here: (Might be a better way to do this)
                listFiles gets the working directory and returns a list of files and their paths; every file is a list,

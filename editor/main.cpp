@@ -1,5 +1,6 @@
 #include "App.h"
 #include "fileManager.h"
+#include "inputParser.h"
 
 #include <string>
 
@@ -8,35 +9,19 @@ int main(int argc, char *argv[])
     editor::Application app;
     std::string filePath;
 
-    // arguments 
-    if (argc > 1 && std::string(argv[1]) == "--path" || argc > 1 && std::string(argv[1]) == "-p")
-    {
-        if (argc > 2)
-        {
-            filePath = std::string(argv[2]);
-            app.fileManager.setPath(filePath);
+    InputParser input(argc, argv);
 
-        // TODO: Use imgui file manager instead
-        }
-        else
-        {
-            printf("No file path provided\n");
-        }
-    }
-    else if (argc > 1 && std::string(argv[1]) == "--style" || argc > 1 && std::string(argv[1]) == "-s")
+    if (input.cmdOptionExists("-p"))
     {
-        if (argc > 2)
-        {
-            std::string style = std::string(argv[2]);
-            app.setStyle(style);
-        }
-        else
-        {
-            printf("No style provided\n");
-        }
+        filePath = input.getCmdOption("-f");
+        app.fileManager.setPath(filePath);
     }
 
-    // TODO: make arguments work together :)
+    if (input.cmdOptionExists("-s"))
+    {
+        std::string style = input.getCmdOption("-s");
+        app.setStyle(style);
+    }
 
     while (!app.shouldClose())
     {

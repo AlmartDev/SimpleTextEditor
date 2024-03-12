@@ -1,8 +1,8 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
-//#include <glad/glad.h>
-#include "imgui.h"
+
+#include <imgui.h>
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
@@ -13,6 +13,7 @@
 #include "windows/fileExplorer.h"
 
 #include "fileManager.h"
+#include <imfilebrowser.h>
 
 #include "style.h"
 
@@ -52,5 +53,7 @@ namespace editor
             editor::FileExplorer fileExplorer{&fileManager, &textEditor};
             editor::About about;
 
+            // File browser
+            ImGui::FileBrowser fileDialog = ImGui::FileBrowser(ImGuiFileBrowserFlags_CreateNewDir | ImGuiFileBrowserFlags_SelectDirectory | ImGuiFileBrowserFlags_EnterNewFilename);
     };
 } // namespace editor

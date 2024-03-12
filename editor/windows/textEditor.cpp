@@ -31,7 +31,14 @@ namespace editor {
 
                     // TODO: Colors for syntax highlighting
 
-                    ImGui::InputTextMultiline("##source", (char*)filesBuf[i].c_str(), filesBuf[i].size() + 1 /* Change this */, ImVec2(-1.0f, -1.0f), ImGuiInputTextFlags_AllowTabInput);
+                    // filesBuf[i] is the buffer from the file when it was opened, but its size is not updated when the user types in the editor
+                    // so we need to create a new buffer and update it with the new size of the file so we can edit it and save it
+                    std::string buffer = filesBuf[i];
+
+                    ImGui::InputTextMultiline("##source", const_cast<char*>(buffer.c_str()), buffer.size() + 1, ImVec2(-1.0f, -1.0f), ImGuiInputTextFlags_AllowTabInput);
+
+                    filesBuf[i] = buffer;
+
                     ImGui::PopFont();
 
                     if (ImGui::IsItemVisible()) {

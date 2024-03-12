@@ -45,10 +45,13 @@ namespace editor
         //ImGui::StyleColorsDark();
         defaultFont = io.Fonts->AddFontFromFileTTF("/home/almartan/dev/TextEditor/editor/fonts/Roboto-Medium.ttf", 15);   // TODO: Change before release
         defaultFontBold = io.Fonts->AddFontFromFileTTF("/home/almartan/dev/TextEditor/editor/fonts/Roboto-Bold.ttf", 18);   // TODO: Change before release
-        codeFont = io.Fonts->AddFontFromFileTTF("/home/almartan/dev/TextEditor/build/bin/debug/fonts/NotoSansMono-Regular.ttf", 15);   // TODO: Change before release
+        codeFont = io.Fonts->AddFontFromFileTTF("/home/almartan/dev/simpletexteditor/editor/fonts/CascadiaCodePL-Regular.ttf", 15);   // TODO: Change before release (This is my favourite font for code!)
 
         io.Fonts->Build();
         io.FontDefault = defaultFont;
+
+        fileDialog.SetTitle("Open Directory");
+        fileDialog.SetInputName("Open");
     }
 
     Application::~Application() {
@@ -109,18 +112,11 @@ namespace editor
             }
         }
         else {
-            // Open a full size popup that asks for a file path
-            // TODO: Maybe use imgui file manager repo instead
-
-            ImGui::OpenPopup("Open File");
-            if (ImGui::BeginPopupModal("Open File", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-                static char path[1024] = "";
-                ImGui::InputText("Path", path, IM_ARRAYSIZE(path));
-                if (ImGui::Button("Open")) {
-                    fileManager.setPath(std::string(path));
-                    ImGui::CloseCurrentPopup();
-                }
-                ImGui::EndPopup();
+            fileDialog.Open();
+            fileDialog.Display();
+            if (fileDialog.HasSelected()) {
+                fileManager.setPath(fileDialog.GetSelected().string());
+                fileDialog.ClearSelected();
             }
         }
 
