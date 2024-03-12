@@ -11,9 +11,9 @@ int main(int argc, char *argv[])
 
     InputParser input(argc, argv);
 
-    if (input.cmdOptionExists("-p"))
+    if (input.cmdOptionExists("-d"))
     {
-        filePath = input.getCmdOption("-f");
+        filePath = input.getCmdOption("-d");
         app.fileManager.setPath(filePath);
     }
 
