@@ -1,3 +1,9 @@
 [submodule "editor/3rdParty/GLFW"]
 	path = editor/3rdParty/GLFW
 	url = https://github.com/TheCherno/glfw.git
+[submodule "editor/3rdParty/imfilebrowser"]
+	path = editor/3rdParty/imfilebrowser
+	url = https://github.com/AirGuanZ/imgui-filebrowser
+[submodule "editor/3rdParty/stb"]
+	path = editor/3rdParty/stb
+	url = https://github.com/nothings/stb
