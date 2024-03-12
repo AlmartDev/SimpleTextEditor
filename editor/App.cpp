@@ -4,6 +4,17 @@
 //testing
 #include <iostream>
 
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+#define SystemOpenURL(url) system("start " url);
+#elif __APPLE__
+#define SystemOpenURL(url) system("open " url);
+#elif __linux__
+#define SystemOpenURL(url) system("xdg-open " url);
+#else
+#error "Unknown compiler"
+#endif
+
+
 namespace editor
 {
     // Function prototypes
@@ -110,6 +121,52 @@ namespace editor
             if (about.showAbout) {
                 about.show(&about.showAbout);
             }
+
+            if (showRenameDialog && textEditor.getWorkingPath() != "") {
+                // Open popup to rename file
+                ImGui::OpenPopup("Rename file");
+                ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiCond_FirstUseEver);
+                if (ImGui::BeginPopupModal("Rename file", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+                    static char newName[128];
+                    ImGui::InputText("New name", newName, IM_ARRAYSIZE(newName));
+                    if (ImGui::Button("Rename")) {
+                        textEditor.removeFile(textEditor.getWorkingPath());
+                        fileManager.renameFile(textEditor.getWorkingPath(), fileManager.getFullPath() + "/" + newName);
+                        showRenameDialog = false;
+                        ImGui::CloseCurrentPopup();
+                    }
+                    ImGui::SameLine();
+                    if (ImGui::Button("Cancel")) {
+                        showRenameDialog = false;
+                        ImGui::CloseCurrentPopup();
+                    }
+                    ImGui::EndPopup();
+                }
+            }
+            if (showSaveAsDialog && textEditor.getWorkingPath() != "") {
+                fileDialogFiles.Open();
+                fileDialogFiles.Display();
+                fileDialogFiles.SetTitle("Save As");
+                std::string workingFileName = textEditor.getWorkingPath().substr(textEditor.getWorkingPath().find_last_of("/") + 1);
+                if (fileDialog.HasSelected()) {
+                    fileManager.saveFile(fileDialog.GetSelected().string() + workingFileName, textEditor.getBuffer());
+                    fileDialogFiles.ClearSelected();
+                    showSaveAsDialog = false;
+                }
+            }
+            if (showOpenFileDialog) {
+                fileDialogFiles.Open();
+                fileDialogFiles.Display();
+                fileDialogFiles.SetTitle("Open File");
+                if (fileDialogFiles.HasSelected()) {
+                    std::string name = fileDialogFiles.GetSelected().string().substr(fileDialogFiles.GetSelected().string().find_last_of("/") + 1);
+                    std::string buf = fileManager.openFile(fileDialogFiles.GetSelected().string());
+
+                    textEditor.addFile(fileDialogFiles.GetSelected().string(), name, buf);
+                    fileDialogFiles.ClearSelected();
+                    showOpenFileDialog = false;
+                }
+            }
         }
         else {
             fileDialog.Open();
@@ -143,32 +200,29 @@ namespace editor
     void Application::showMenuBar() {
         if (ImGui::BeginMainMenuBar()) {
             if (ImGui::BeginMenu("File")) {
-                if (ImGui::MenuItem("New*")) {
-                    // New file
+                if (ImGui::MenuItem("New")) {
+                    textEditor.addFile("Untitled", fileManager.getFullPath(), "");
                 }
-                if (ImGui::MenuItem("Open*")) {
-                    // Open file
+                if (ImGui::MenuItem("Open")) {
+                    showOpenFileDialog = true;
                 }
-                if (ImGui::MenuItem("Open directory*")) {
-                    // Open dir
+                if (ImGui::MenuItem("Open Directory")) {
+                    fileManager.setPath("");
                 }
-                if (ImGui::MenuItem("Save*")) {
-                    // Save file
+                if (ImGui::MenuItem("Save")) {
+                    fileManager.saveFile(textEditor.getWorkingPath(), textEditor.getBuffer());
                 }
-                if (ImGui::MenuItem("Save As*")) {
-                    // Save file as
+                if (ImGui::MenuItem("Save As")) {
+                    showSaveAsDialog = true;
                 }
-                if (ImGui::BeginMenu("Working File")) {
-                    if (ImGui::MenuItem("Delete")) {
-                        // Delete file
-                        fileManager.deleteFile(textEditor.getWorkingPath());
-                        // Close tab
-                        textEditor.removeFile(textEditor.getWorkingPath());
-                    }
-                    if (ImGui::MenuItem("Rename*")) {
-                        // Rename file
-                    }
-                    ImGui::EndMenu();
+                if (ImGui::MenuItem("Delete")) {
+                    // Delete file
+                    fileManager.deleteFile(textEditor.getWorkingPath());
+                    // Close tab
+                    textEditor.removeFile(textEditor.getWorkingPath());
+                }
+                if (ImGui::MenuItem("Rename")) {
+                    showRenameDialog = true;
                 }
                 if (ImGui::MenuItem("Exit")) {
                     quitApp();         
@@ -181,9 +235,6 @@ namespace editor
                 }
                 if (ImGui::MenuItem("Text Editor")) {
                     textEditor.showEditor = true;
-                }
-                if (ImGui::MenuItem("About")) {
-                    about.showAbout = true;
                 }
                 ImGui::EndMenu();
             }
@@ -201,6 +252,16 @@ namespace editor
                     ImGui::EndMenu();
                 }
                     
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("Help")) {
+                if (ImGui::MenuItem("About")) {
+                    about.showAbout = true;
+                }
+                if (ImGui::MenuItem("GitHub")) {
+                    // Open GitHub page
+                    SystemOpenURL("https://github.com/almartdev/simpletexteditor");
+                }
                 ImGui::EndMenu();
             }
             ImGui::EndMainMenuBar();

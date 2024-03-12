@@ -15,6 +15,7 @@ namespace editor {
             void removeFile(std::string name);
 
             std::string getWorkingPath() { return workingPath; }
+            const char* getBuffer() { return buffer; }
             float getFontSize() { return fontSize; }
 
             ImFont* codeFont;
@@ -28,5 +29,7 @@ namespace editor {
             std::string workingPath = "";
 
             float fontSize = 15.0f;
+
+            const char* buffer;
     };
 } // namespace editor

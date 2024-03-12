@@ -22,6 +22,15 @@ namespace editor {
                     if (ImGui::Button("-"))
                         fontSize -= 1.0f;
 
+                    // super simple python script running
+                    if (filesNames[i].substr(filesNames[i].find_last_of(".") + 1) == "py") {
+                        ImGui::SameLine();
+                        if (ImGui::Button("Run")) {
+                            std::string command = "python " + filesPath[i];
+                            system(command.c_str());
+                        }
+                    }
+
                     ImGui::PushFont(codeFont);
                     // Line number
                     unsigned int lineCount = std::count(filesBuf[i].begin(), filesBuf[i].end(), '\n');
@@ -33,11 +42,9 @@ namespace editor {
 
                     // filesBuf[i] is the buffer from the file when it was opened, but its size is not updated when the user types in the editor
                     // so we need to create a new buffer and update it with the new size of the file so we can edit it and save it
-                    std::string buffer = filesBuf[i];
-
-                    ImGui::InputTextMultiline("##source", const_cast<char*>(buffer.c_str()), buffer.size() + 1, ImVec2(-1.0f, -1.0f), ImGuiInputTextFlags_AllowTabInput);
-
-                    filesBuf[i] = buffer;
+                    ImGui::InputTextMultiline("##source", const_cast<char*>(filesBuf[i].c_str()), sizeof(filesBuf[i]) + 1, ImVec2(-1.0f, -1.0f), ImGuiInputTextFlags_AllowTabInput);
+                
+                    this->buffer = const_cast<char*>(filesBuf[i].c_str());
 
                     ImGui::PopFont();
 

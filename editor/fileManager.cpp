@@ -8,7 +8,10 @@ namespace editor {
 
     void FileManager::setPath(std::string _path) {
         path = _path;
-        fullPath = std::filesystem::absolute(path).string();
+        if (path == "") 
+            fullPath = "";
+        else 
+            fullPath = std::filesystem::absolute(path).string();
     }
 
     std::string FileManager::getFileName(std::string path) {

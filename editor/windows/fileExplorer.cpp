@@ -34,9 +34,6 @@ namespace editor {
 
             char label[128];
             sprintf(label, files[0][i].c_str());
-
-
-
             if (files[0][i].find("/") == std::string::npos) {
                 if (ImGui::Selectable(label, selected == i)) {
                     FileExplorer::openFile(files[1][i]);
@@ -62,9 +59,7 @@ namespace editor {
                     ImGui::TreePop();
                 }
             }
-            
-
-                
+               
             selected = i;
             
             /*

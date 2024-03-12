@@ -55,5 +55,11 @@ namespace editor
 
             // File browser
             ImGui::FileBrowser fileDialog = ImGui::FileBrowser(ImGuiFileBrowserFlags_CreateNewDir | ImGuiFileBrowserFlags_SelectDirectory | ImGuiFileBrowserFlags_EnterNewFilename);
+            ImGui::FileBrowser fileDialogFiles = ImGui::FileBrowser(ImGuiFileBrowserFlags_EnterNewFilename);
+
+            // Dialogs
+            bool showRenameDialog = false;
+            bool showSaveAsDialog = false;
+            bool showOpenFileDialog = false;
     };
 } // namespace editor
